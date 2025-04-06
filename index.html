@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -27,10 +28,11 @@
             justify-content: center;
             height: 100%;
         }
+
         .main .tip {
             font-size: 0.8em;
             color: rgba(0, 0, 0, 0.6);
-            
+
         }
 
         input {
@@ -83,57 +85,67 @@
 
 <body>
 
-<div class="container">
-    <div class="main">
-        <input type="text" id="address" name="address" placeholder="请输入地址" required>
-        <button type="button" id="generated">生成图片</button>
-        <span class="tip">小提示🌀：图片生成后长按保存图片到相册</span>
+    <div class="container">
+        <div class="main">
+            <input type="text" id="address" name="address" placeholder="请输入地址" required>
+            <button type="button" id="generated">生成图片</button>
+            <span class="tip">小提示🌀：图片生成后长按保存图片到相册</span>
+        </div>
+
+        <div class="image-container">
+            <img id="image" class="image" src="" alt="Generated Image" style="display: none;">
+        </div>
+
     </div>
-    
-    <div class="image-container">
-        <img id="image" class="image" src="" alt="Generated Image" style="display: none;">
-    </div>
-    
-</div>
 
-<script>
-    const addressInput = document.getElementById('address');
-    const button = document.getElementById('generated');
-    const image = document.getElementById('image');
+    <script>
+        const addressInput = document.getElementById('address');
+        const button = document.getElementById('generated');
+        const image = document.getElementById('image');
 
 
-    button.addEventListener('click', async function() {
-        button.textContent = "生成中...";
-        await generateImage()
-        setTimeout(() => {
+        button.addEventListener('click', async function () {
+            button.textContent = "生成中...";
+            await generateImage()
+            setTimeout(() => {
                 button.textContent = "生成图片";
             }, 200);
-    });
+        });
 
-    async function generateImage() {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
+        async function generateImage() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
 
-        const width = 1279;
-        const height = 2691;
-        canvas.width = width;
-        canvas.height = height;
+            const width = 1279;
+            const height = 2691;
+            canvas.width = width;
+            canvas.height = height;
 
-        const backgroundImage = new Image();
-        backgroundImage.src = "./template.jpg";
-        backgroundImage.onload = function() {
-            ctx.drawImage(backgroundImage, 0, 0, width, height);
-            ctx.font = '58px Arial';
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
-            const addressLeft = width * 0.11;
-            const addressTop = height * 0.635;
-            ctx.fillText(addressInput.value, addressLeft, addressTop);
-            const dataURL = canvas.toDataURL('image/png');
-            image.src = dataURL;
-            image.style.display = 'block';
+            const backgroundImage = new Image();
+            backgroundImage.src = "./template.jpg";
+
+            // 使用 Promise 来确保图片加载完成后再处理
+            await new Promise((resolve) => {
+                backgroundImage.onload = function () {
+                    ctx.drawImage(backgroundImage, 0, 0, width, height);
+                    ctx.font = '58px Arial';
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+                    const addressLeft = width * 0.11;
+                    const addressTop = height * 0.635;
+                    ctx.fillText(addressInput.value, addressLeft, addressTop);
+
+                    const dataURL = canvas.toDataURL('image/png');
+                    image.src = dataURL;
+                    image.style.display = 'block';
+
+                    resolve();  // 图片加载完成后 resolve
+                };
+            });
+
+            // 图片渲染完成后恢复按钮文本
+            button.textContent = "生成图片";
         }
-    }
-</script>
+    </script>
 
 </body>
 
