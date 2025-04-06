@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>拼多多退货退款订单生成器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f9;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+        }
+
+        .main {
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 16px;
+            justify-content: center;
+            height: 100%;
+        }
+        .main .tip {
+            font-size: 0.8em;
+            color: rgba(0, 0, 0, 0.6);
+            
+        }
+
+        input {
+            padding: 10px 12px;
+            margin: 10px 0;
+            font-size: 16px;
+            border-radius: 4px;
+            border: 1px solid #d9d9d9;
+            background-color: #fff;
+            color: rgba(0, 0, 0, 0.85);
+            width: 100%;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #1677ff;
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+        }
+
+        input::placeholder {
+            color: rgba(0, 0, 0, 0.25);
+            font-size: 16px;
+        }
+
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            background-color: #1677ff;
+            color: white;
+            font-size: 1em;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:active {
+            background-color: #0958d9;
+        }
+
+        .image {
+            margin: 16px 0;
+            max-width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="main">
+        <input type="text" id="address" name="address" placeholder="请输入地址" required>
+        <button type="button" id="generated">生成图片</button>
+        <span class="tip">小提示🌀：图片生成后长按保存图片到相册</span>
+    </div>
+    
+    <div class="image-container">
+        <img id="image" class="image" src="" alt="Generated Image" style="display: none;">
+    </div>
+    
+</div>
+
+<script>
+    const addressInput = document.getElementById('address');
+    const button = document.getElementById('generated');
+    const image = document.getElementById('image');
+
+
+    button.addEventListener('click', function() {
+        button.textContent = "生成中...";
+        generateImage()
+        setTimeout(() => {
+                button.textContent = "生成图片";
+            }, 200);
+    });
+
+    function generateImage() {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        const width = 1279;
+        const height = 2691;
+        canvas.width = width;
+        canvas.height = height;
+
+        const backgroundImage = new Image();
+        backgroundImage.src = "./template.jpg";
+        backgroundImage.onload = function() {
+            ctx.drawImage(backgroundImage, 0, 0, width, height);
+            ctx.font = '58px Arial';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+            const addressLeft = width * 0.11;
+            const addressTop = height * 0.635;
+            ctx.fillText(addressInput.value, addressLeft, addressTop);
+            const dataURL = canvas.toDataURL('image/png');
+            image.src = dataURL;
+            image.style.display = 'block';
+        }
+    }
+</script>
+
+</body>
+
+</html>
