@@ -102,15 +102,15 @@
     const image = document.getElementById('image');
 
 
-    button.addEventListener('click', function() {
+    button.addEventListener('click', async function() {
         button.textContent = "生成中...";
-        generateImage()
+        await generateImage()
         setTimeout(() => {
                 button.textContent = "生成图片";
             }, 200);
     });
 
-    function generateImage() {
+    async function generateImage() {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
 
